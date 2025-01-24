@@ -1,0 +1,25 @@
+# global:
+#   image:
+#     tag: "v2.6.6"
+
+configs: 
+  params:
+    server.insecure: false
+    server.disable.auth: false
+
+server:
+
+  service:
+    type: LoadBalancer
+  metrics: 
+    enabled: true
+  # extraArgs:
+  # - --insecure
+
+# configs: 
+#   metrics: true
+
+controller:
+  metrics:
+    enabled: true
+
