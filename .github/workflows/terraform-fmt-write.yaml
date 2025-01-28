@@ -1,0 +1,33 @@
+---
+name: Fmt
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - '**/.tf'
+      - '**/.tfvars'
+  pull_request:
+    branches:
+      - master
+      - main
+    paths:
+      - '**/.tf'
+      - '**/.tfvars'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 1'
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true  # git push fails with non-fast forward write, so may as well cancel in-progress workflows
+
+jobs:
+  format-write:
+    name: Terraform Fmt Write
+    uses: curtdingdong/Github-Actions/.github/workflows/terraform-fmt-write.yaml@master
+    permissions:
+      contents: write
+      pull-requests: write
