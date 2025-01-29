@@ -1,6 +1,5 @@
 ---
-name: YAML
-
+name: yamllint.yaml
 on:
   push:
     branches:
@@ -9,6 +8,7 @@ on:
     paths:
       - '**/*.yml'
       - '**/*.yaml'
+      - .github/workflows/yaml.yaml
   pull_request:
     branches:
       - master
@@ -16,57 +16,33 @@ on:
     paths:
       - '**/*.yml'
       - '**/*.yaml'
-  workflow_call:
+      - .github/workflows/yaml.yaml
+  workflow_dispatch:
     inputs:
-      submodules:
-        type: string
-        required: false
-        default: recursive
       debug:
-        type: string
+        description: "for documentation"
+        type: boolean
         required: false
         default: false
-  # workflow_dispatch:
-  #   inputs:
-  #     submodules:
-  #       type: string
-  #       required: false
-  #       default: recursive
-  #     debug:
-  #       type: boolean
-  #       required: false
-  #       default: false
-  #schedule:
-  #  - cron: '0 0 * * 1'
+  schedule:
+    - cron: '0 0 * * 1'
 
 permissions:
   contents: read
 
-defaults:
-  run:
-    shell: bash -euxo pipefail {0}
-
-env:
-  DEBUG: ${{ inputs.debug == true || github.event.inputs.debug == 'true' || '' }}
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
 
 jobs:
-  check_yaml:
-    name: Check YAML
-    # github.event.repository.fork isn't available in scheduled workflows
-    # can't prevent forks of this repo, because also prevents caller workflows
-    #if: github.repository == 'HariSekhon/Github-Actions'
+  yamllint:
+    name: 'Yamllint'
     runs-on: ubuntu-latest
     steps:
-      - name: Environment
-        run: env | sort
-
-      - name: Git version
-        run: git --version
-
-      - uses: actions/checkout@v3
+      - name: 'Checkout'
+        uses: actions/checkout@master
+      - name: 'Yamllint'
+        uses: karancode/yamllint-github-action@master
         with:
-          submodules: ${{ inputs.submodules }}  # 'recursive' default requires Git 2.18+ to be installed first
-
-      - name: Check YAML
-        run: |
-          check_yaml.sh
+          yamllint_strict: false
+          yamllint_comment: true
