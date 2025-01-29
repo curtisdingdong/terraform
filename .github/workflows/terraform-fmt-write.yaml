@@ -27,7 +27,7 @@ concurrency:
 jobs:
   format-write:
     name: Terraform Fmt Write
-    uses: curtdingdong/Github-Actions/.github/workflows/terraform-fmt-write.yaml@master
+    uses: curtisdingdong/Github-Actions/.github/workflows/terraform-fmt-write.yaml@master
     permissions:
       contents: write
       pull-requests: write
