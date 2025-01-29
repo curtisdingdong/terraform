@@ -1,6 +1,7 @@
 resource "argocd_project" "infra-project" {
   metadata {
-    name      = "myproject"
+    name = "infra-project"
+
     namespace = "argocd"
     labels = {
       acceptance = "true"
@@ -11,13 +12,13 @@ resource "argocd_project" "infra-project" {
   }
 
   spec {
-    description = "Infra Prokect"
+    description       = "Infra Project"
     source_repos      = ["*"]
     source_namespaces = ["argocd"]
 
-    destination  {
+    destination {
       namespace = var.kube-system-ns
-      server = var.clustername
+      server    = var.clustername
     }
 
 

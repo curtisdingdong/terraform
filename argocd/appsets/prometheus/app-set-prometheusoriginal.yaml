@@ -1,0 +1,213 @@
+#https://github.com/prometheus-community/helm-charts/tree/prometheus-15.10.5/charts/prometheus
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: app-set-prometheus
+  namespace: argocd
+spec:
+
+  # syncPolicy:
+  #   automated:
+  #     prune: true
+
+  generators:
+  - list:
+      elements:
+      - cluster: in-cluster
+        url: https://kubernetes.default.svc
+
+  template:
+    metadata:
+      name: '{{cluster}}-prometheus'
+    spec:
+      project: infra-project
+      revisionHistoryLimit: 1
+      source:
+        chart: prometheus
+        repoURL: https://prometheus-community.github.io/helm-charts/
+        targetRevision: 15.10.5
+        # targetRevision: 25.1.0
+        helm:
+          values: |
+
+            pushgateway:
+              enabled: false
+
+            server:
+              # persistentVolume:
+              #   enabled: true
+              #   storageClass: "default"
+              service:
+                labels: {
+                  version: v1.42.0
+                }
+              podLabels: {
+                version: v1.42.0
+              }
+
+            alertmanager:
+              # persistentVolume:
+              #   enabled: true
+              #   storageClass: "default"
+
+              podLabels: {
+                version: v1.42.0
+              }
+
+              # service:
+              #   labels: {
+              #     service: prometheus
+
+              #   }
+            nodeExporter:
+              pod:
+                labels: {
+                  app: prometheus,
+                  version: v1.42.0
+                }
+
+
+    #        annotations:
+    #  sidecar.istio.io/inject: "true"     
+            service:
+              labels: {
+                app: prometheus,
+                version: v1.42.0
+              }
+
+            serverFiles:
+
+              ## Alerts configuration
+              ## Ref: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/
+              alerting_rules.yml:
+                # groups:
+                #   - name: pod restarted
+                #     rules:
+                #     - alert: PodRestarted
+                #       expr: kube_pod_container_status_restarts_total < 1
+                #       for: 0s
+                #       labels:
+                #         severity: High
+                #       annotations:
+                #         summary: Pod restarted
+
+              alerts: {}
+
+
+              recording_rules.yml: {}
+              ## DEPRECATED DEFAULT VALUE, unless explicitly naming your files, please use recording_rules.yml
+              rules: {}
+
+              prometheus.yml:
+                rule_files:
+                  - /etc/config/recording_rules.yml
+                  - /etc/config/alerting_rules.yml
+                ## Below two files are DEPRECATED will be removed from this default values file
+                  - /etc/config/rules
+                  - /etc/config/alerts
+
+                scrape_configs:
+                  - job_name: prometheus
+                    static_configs:
+                      - targets:
+                        - localhost:9090
+
+                  - job_name: grafana
+                    static_configs:
+                      - targets:
+                        - in-cluster-grafana.grafana.svc.cluster.local
+                      # - grafana.example.com
+                    scheme: http
+
+                  - job_name: argocd-server-metrics
+                    static_configs:
+                      - targets:
+                        - argocd-server-metrics.argocd.svc.cluster.local:8083
+                    scheme: http
+
+                  - job_name: argocd-application-controller-metrics
+                    static_configs:
+                      - targets:
+                        - argocd-application-controller-metrics.argocd.svc.cluster.local:8082
+                    scheme: http
+
+                  - job_name: argocd-redis-metrics
+                    static_configs:
+                      - targets:
+                        - argocd-redis-metrics.argocd.svc.cluster.local:9121
+                    scheme: http
+
+                  - job_name: argocd-dex-metrics
+                    static_configs:
+                      - targets:
+                        - argocd-redis-metrics.argocd.svc.cluster.local:5558
+                    scheme: http
+
+                  # - job_name: jaeger
+                  #   static_configs:
+                  #     - targets:
+                  #       - jaeger-query.jaeger-operator
+                  #   #   - grafana.example.com
+                  #   scheme: http
+
+                  # - job_name: keycloak
+                  #   static_configs:
+                  #     - targets:
+                  #       - keycloak-http.keycloak:9990
+                  #   #   - grafana.example.com
+                  #   scheme: http
+                  # - job_name: grafana
+                  #   static_configs:
+                  #     - targets:
+                  #       - grafana.grafana
+                  #   #    - grafana.example.com
+                  #   scheme: http
+
+                  # - job_name: bookinfo
+                  #   static_configs:
+                  #     - targets:
+                  #       - bookinfo.details.svc.cluster.local
+
+                  # - job_name: 'istiod'
+                  #   kubernetes_sd_configs:
+                  #   - role: endpoints
+                  #     namespaces:
+                  #       names:
+                  #       - istio-system
+                  #   relabel_configs:
+                  #   - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+                  #     action: keep
+                  #     regex: istiod;http-monitoring
+
+
+                  # - job_name: 'envoy-stats'
+                  #   metrics_path: /stats/prometheus
+                  #   kubernetes_sd_configs:
+                  #   - role: pod
+
+                  #   relabel_configs:
+                  #   - source_labels: [__meta_kubernetes_pod_container_port_name]
+                  #     action: keep
+                  #     regex: '.*-envoy-prom'
+
+      destination:
+        server: '{{url}}'
+        namespace: prometheus
+
+      syncPolicy:
+        automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+          prune: false # Specifies if resources should be pruned during auto-syncing ( false by default ).
+          selfHeal: false # Specifies if partial app sync should be executed when resources are changed only in target Kubernetes cluster and no git change detected ( false by default ).
+          allowEmpty: false # Allows deleting all application resources during automatic syncing ( false by default ).
+        syncOptions:     # Sync options which modifies sync behavior
+        - Validate=false # disables resource validation (equivalent to 'kubectl apply --validate=false') ( true by default ).
+        - CreateNamespace=true # Namespace Auto-Creation ensures that namespace specified as the application destination exists in the destination cluster.
+        - PrunePropagationPolicy=foreground # Supported policies are background, foreground and orphan.
+        - PruneLast=true # Allow the ability for resource pruning to happen as a final, implicit wave of a sync operation
+        # The retry feature is available since v1.7
+        retry:
+          limit: 5 # number of failed sync attempt retries; unlimited number of attempts if less than 0
+          backoff:
+            duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
+            factor: 2 # a factor to multiply the base duration after each failed retry
+            maxDuration: 3m # the maximum amount of time allowed for the backoff strategy
