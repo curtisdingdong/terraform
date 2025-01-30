@@ -33,7 +33,7 @@ Registry](https://registry.terraform.io/providers/argoproj-labs/argocd/latest/do
 
 ### Migrate provider source `oboukili` -> `argoproj-labs`
 
-As announced in the releases [v6.2.0] and [v7.0.0], we moved the provider from "github.com/**oboukili**/terraform-provider-argocd/" 
+As announced in the releases [v6.2.0] and [v7.0.0], we moved the provider from "github.com/**oboukili**/terraform-provider-argocd/"
 to "github.com/**argoproj-labs**/terraform-provider-argocd". Users need to migrate their Terraform state according to
 HashiCorps [replace-provider] docs. In summary, you can do the following:
 

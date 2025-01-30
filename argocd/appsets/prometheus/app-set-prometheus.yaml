@@ -508,7 +508,7 @@ spec:
               enabled: true
 
 
-              
+
 
             ## kube-state-metrics sub-chart configurable values
             ## Please see https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics
@@ -1989,7 +1989,7 @@ spec:
               #   data:
               #     extra-data: "value"
 
-            
+
 
       destination:
         server: '{{url}}'

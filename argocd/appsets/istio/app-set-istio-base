@@ -66,5 +66,3 @@ resource "argocd_application" "helm" {
 
         }
   }
-
-
