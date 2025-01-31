@@ -2,7 +2,7 @@
 #   image:
 #     tag: "v2.6.6"
 
-configs: 
+configs:
   params:
     server.insecure: false
     server.disable.auth: false
@@ -11,15 +11,14 @@ server:
 
   service:
     type: LoadBalancer
-  metrics: 
+  metrics:
     enabled: true
   # extraArgs:
   # - --insecure
 
-# configs: 
+# configs:
 #   metrics: true
 
 controller:
   metrics:
     enabled: true
-
