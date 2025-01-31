@@ -6,11 +6,11 @@ provider "helm" {
 
 
 provider "argocd" {
-  server_addr = "192.168.12.100:443"
-  username = "admin"
-  password = "dK9h$N^&gSJxT!"
+  server_addr = var.argocd_server
+  username = var.argocd_user
+  password = var.argocd_password
   insecure = true
-}   
+}
 
 terraform {
     required_providers {
