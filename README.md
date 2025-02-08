@@ -19,3 +19,11 @@ https://registry.terraform.io/providers/dcoppa/argocd/latest/docs
 from here we use the argocd terraform provider.
 
 The Terraform Argocd provider lets us define the following:-
+
+
+# Terraform Tools
+https://www.gruntwork.io
+
+https://spacelift.io
+
+https://www.harness.io
