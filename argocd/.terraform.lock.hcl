@@ -4,6 +4,7 @@
 provider "registry.terraform.io/argoproj-labs/argocd" {
   version = "7.0.3"
   hashes = [
+    "h1:KpBW2f7madS8cmg0cXwxbcl8AAeNm3sy4fXFZolHrsM=",
     "h1:UZgGzM0uo17AwuSTSCspi5ol5LRlIULYfJtmtg6B7eQ=",
     "zh:1805a7bdae252020ce1bf3e7ec417b416c25b377fe7adeaeeae61d8b290ea0c0",
     "zh:1de67e6cf614064b28698f7e661f969a99cdd1ea0a3bad26ef4595c87eaeeb4f",
@@ -23,6 +24,7 @@ provider "registry.terraform.io/hashicorp/helm" {
   hashes = [
     "h1:SOU2r+hA0/Txx3nSLGTAlP6UNLZUaAw879/neGDFhbU=",
     "h1:TerRBdq69SxIWg3ET2VE0bcP0BYRIWZOp1QxXj/14Fk=",
+    "h1:cE+SeUMcm6fBiidrLGg/H/MvT11CYQ1Y0EVoutK4UlE=",
     "zh:0003f6719a32aee9afaeeb001687fc0cfc8c2d5f54861298cf1dc5711f3b4e65",
     "zh:16cd5bfee09e7bb081b8b4470f31a9af508e52220fd97fd81c6dda725d9422fe",
     "zh:51817de8fdc2c2e36785f23fbf4ec022111bd1cf7679498c16ad0ad7471c16db",
