@@ -32,10 +32,6 @@ resource "argocd_application_set" "cluster_decision_resource" {
           repo_url        = "https://prometheus-community.github.io/helm-charts/"
           target_revision = "6.0.0"
           chart = "prometheus-operator-crds"
-                    helm{
-            value_files = ["grafana-values.yml"]
-          }
-
         }
 
         destination {

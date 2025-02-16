@@ -1,0 +1,107 @@
+rbac:
+  pspEnabled: false
+pushgateway:
+  enabled: false
+sidecar:
+  dashboards:
+    enabled: true
+    label: grafana_dashboard
+    searchNamespace: argocd
+plugins:
+  - natel-discrete-panel
+  - redis-datasource
+  - grafana-mongodb-datasource
+service:
+  port: 80
+  targetPort:  3000
+  portName: http
+  # portName: http
+  # nodePort: 30011
+  # type: NodePort
+  labels: {
+    app: grafana,
+    version: "1"
+  }
+podLabels: {
+  owner: infra,
+  version: "1",
+  app: grafana,
+  service: grafana,
+  istio: ingressgateway
+
+}
+annotations: {
+  app.kubernetes.io/name: grafana,
+  sidecar.istio.io/inject: "true"
+}
+# nodeSelector: {
+#   kubernetes.io/hostname: "master.bellc.local"
+# }
+
+adminUser: admin
+adminPassword: strongpassword
+
+
+
+# serviceMonitor:
+#   ## If true, a ServiceMonitor CRD is created for a prometheus operator
+#   ## https://github.com/coreos/prometheus-operator
+#   ##
+#   enabled: true
+#   path: /metrics
+#   #  namespace: monitoring  (defaults to use the namespace this chart is deployed to)
+#   labels:
+#     k8s-app: grafana
+#     serviceMonitorSelector: prometheus
+#   interval: 1m
+#   scheme: http
+#   tlsConfig: {}
+#   scrapeTimeout: 30s
+#   relabelings: []
+#   # targetLabels:
+#   #   - serviceMonitorSelector: prometheus
+#   # # - targetLabel1
+#   # # - targetLabel2
+
+
+# grafana.ini:
+#   auth:
+#     disable_login_form: true
+#     oauth_auto_login: true
+
+#   users:
+#     auto_assign_org_role: Admin
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://in-cluster-prometheus-server.prometheus
+      access: Server
+      isDefault: true
+
+    # - name: Reddis Cluster
+    #   type: redis-datasource
+    #   url: redis://redis-cluster.redis-cluster.svc.cluster.local:6379
+    #   access: Server
+    #   isDefault: false
+
+    - name: Reddis Argocd
+      type: redis-datasource
+      url: redis://argocd-redis.argocd.svc.cluster.local:6379
+      access: Server
+      isDefault: false
+
+    # - name: Postgres
+    #   type: postgres
+    #   url: http://postgres-postgresql.postgres.svc.cluster.local:5432
+    #   access: Server
+    #   isDefault: false
+
+    # - name: Jaeger
+    #   type: jaeger
+    #   url: http://jaeger-query.jaeger-operator.svc.cluster.local
+    #   access: Server
+    #   isDefault: true
