@@ -4,6 +4,7 @@
 
 configs:
   params:
+  #running istio to do mtls
     server.insecure: false
     server.disable.auth: false
 
