@@ -9,6 +9,18 @@ kubernetes is setup with either k3s or terraform itself or other means.
 
 We then we terraform with helm provider to deploy argo itself
 
+
+## Terraform Argo-CD
+
+
+This lets you create Argo-CD itself along with key resources such as , Argo-CD Apps, Argo-CD AppSets, Argo-CD Projects, Argo-CD Repositories.
+
+Github <https://registry.terraform.io/providers/argoproj-labs/argocd/7.3.1>
+Provider <https://github.com/argoproj-labs/terraform-provider-argocd>
+Docs <https://registry.terraform.io/providers/argoproj-labs/argocd/latest/docs>
+
+
+
 Terraform Argocd Provider Github
 https://github.com/argoproj-labs/terraform-provider-argocd
 
